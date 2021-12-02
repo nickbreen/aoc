@@ -15,4 +15,4 @@ done
 
 echo ${depth_windows[@]} | tr ' ' '\n'
 
-# then pipe into part1.sh
+# then pipe into count_increases
