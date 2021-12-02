@@ -12,6 +12,6 @@ $1 == "up" {
     position_v -= $2
 }
 
-{
+END {
     print position_h * position_v
 }
