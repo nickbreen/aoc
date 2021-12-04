@@ -16,6 +16,7 @@ NR == 1 {
     row_index++
     for (i = 1; i <= NF; i++) {
         boards[board_index][row_index][i] = $i
+        board_sums[board_index] += $i
     }
 }
 
@@ -26,22 +27,13 @@ END {
                 for (i in boards[b][r]) {
                     rows[b][r] += boards[b][r][i] == draw[d]
                     cols[b][i] += boards[b][r][i] == draw[d]
+                    board_sums[b] -= draw[d] * (boards[b][r][i] == draw[d])
                     if (rows[b][r] == 5 || cols[b][i] == 5) {
-                        print_board(boards[b])
+                        print board_sums[b] * draw[d]
                         exit
                     }
                 }
             }
         }
-    }
-}
-
-function print_board(rows,    r, row, i) {
-    for (r in rows) {
-        row = ""
-        for (i in rows[r]) {
-            row = row " " sprintf("%2d", rows[r][i])
-        }
-        print row
     }
 }
