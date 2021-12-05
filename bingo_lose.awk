@@ -23,7 +23,7 @@ NR == 1 {
 END {
     for (d in draw) {
         for (b in boards) {
-            if (wins[b]) continue
+            if (b in wins) continue
             for (r in boards[b]) {
                 for (i in boards[b][r]) {
                     rows[b][r] += boards[b][r][i] == draw[d]
