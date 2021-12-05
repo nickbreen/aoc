@@ -47,20 +47,7 @@ $2 == $4 && $3 < $1 {
 }
 
 END {
-    print "END"
-
-#    print_grid(grid, min_y, max_y, min_x, max_x)
-
     for (y in grid) for (x in grid[y]) if (grid[y][x] > 1) danger++
 
     print danger
 }
-
-#function print_grid(grid, min_y, max_y, min_x, max_x,      y, x) {
-#    for (y = min_y; y <= max_y; y++) {
-#        for (x = min_x; x <= max_x; x++) {
-#            printf "%s", (y in grid && x in grid[y] ? grid[y][x] : ".")
-#        }
-#        printf "\n"
-#    }
-#}
