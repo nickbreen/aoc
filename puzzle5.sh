@@ -2,6 +2,6 @@
 
 ./vents.awk test.vents.txt
 ./vents.awk data.vents.txt
-#
-#./bingo_lose.awk test.bingo.txt
-#./bingo_lose.awk data.bingo.txt
+
+./vents_diag.awk test.vents.txt
+./vents_diag.awk data.vents.txt

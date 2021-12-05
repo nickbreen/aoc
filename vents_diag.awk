@@ -28,7 +28,7 @@ function min_max(x1, y1, x2, y2) {
     max_y = max_y < y2 ? y2 : max_y
 }
 
-$1 == $3 || $2 == $4 {
+{
     add_vent(grid, $1, $2, $3, $4)
     min_max($1, $2, $3, $4)
 }
