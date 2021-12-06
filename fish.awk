@@ -20,7 +20,7 @@ END {
         fish[d][8] = fish[d-1][0]  # add the new fish
     }
 
-    for (f in fish) fish_count+=fish[days][f]
+    for (f in fish[days]) fish_count+=fish[days][f]
     print fish_count
 }
 
