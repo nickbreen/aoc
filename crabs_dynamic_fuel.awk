@@ -17,7 +17,7 @@ END {
     for (p = 0; p <= max_pos; p++) {
         for (c in crabs) {
             dist = abs(c - p)
-            for (i = dist; i; i--) fuel[p] += i * crabs[c] # to lazy to figure out the formula
+            fuel[p] += dist * (dist + 1) / 2 * crabs[c] # I am not Gauss
 #            print "Pos", p, "Crabs", crabs[c] "@" c, "Fuel", abs(c - p) * crabs[c]
         }
 #        print "Fuel", p, fuel[p]
