@@ -1,9 +1,9 @@
 #!/usr/bin/awk --file
 
 {
-    print $12, $13, $14, $15
+    #print $12, $13, $14, $15
     for (i = 12; i <= 15; i++) {
-        print $i, length($i)
+        #print $i, length($i)
         switch (length($i)) {
             case 2: # 1
             case 4: # 4
