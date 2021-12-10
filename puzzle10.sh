@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-./code.awk test.code.txt
-./code.awk data.code.txt
+./code1.awk test.code.txt
+./code1.awk data.code.txt
 
+./code2.awk test.code.txt
+./code2.awk data.code.txt
