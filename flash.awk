@@ -27,9 +27,15 @@ function print_octopus(     y, x, s) {
 END {
     for (i = 1; i <= STEPS; i++) {
         step_octopus()
+        step_flashes = 0
         for (flashes = flash_octopus(); flashes; flashes = flash_octopus()) {
             FLASHES += flashes
+            step_flashes += flashes
             print print_octopus()
+        }
+        if (step_flashes == Y * X) {
+            print "WOW!!!", i
+            exit 0
         }
         zero_octopus()
         print print_octopus()
