@@ -6,8 +6,7 @@ BEGIN {
 
 BEGINFILE {
     delete TREE
-    delete PATHS
-    PATH = 0
+    PATHS = 0
 }
 
 $1 == "start" || $2 == "end" {
@@ -27,30 +26,23 @@ $2 == "start" || $1 == "end" {
 
 ENDFILE {
     paths("start", "end")
-    print FILENAME, PATH
+    print FILENAME, PATHS
 }
 
-function paths(from, to, p, path, visited,      i, s) {
-    path[p+1] = from
+function paths(from, to, visited,      i, s) {
     visited[from]++
 
     if (from == to) {
-        #print "PATH", sprint_arr(path, 1, p+1)
         visited[from]--
-        PATH++
+        PATHS++
         return
     } else {
         for (i = 1; i <= TREE[from][0]; i++)
             if (can_visit(TREE[from][i], visited)) {
-                paths(TREE[from][i], to, p+1, path, visited)
+                paths(TREE[from][i], to, visited)
             }
     }
     visited[from]--
-}
-
-function sprint_arr(arr, i, j,    s) {
-    while (i <= j) s = s (s ? "," : "") arr[i++]
-    return s
 }
 
 function can_visit(cave, visited,    c, n) {
