@@ -29,7 +29,7 @@ ENDFILE {
     print FILENAME, PATHS
 }
 
-function paths(from, to, visited,      i, s) {
+function paths(from, to, visited,      i) {
     visited[from]++
 
     if (from == to) {
