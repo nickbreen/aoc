@@ -26,13 +26,13 @@ $2 == "start" || $1 == "end" {
 }
 
 ENDFILE {
-    print_tree("start", "end")
+    paths("start", "end")
     print FILENAME, PATH
 }
 
-function print_tree(from, to, p, path, visited,      i, s) {
+function paths(from, to, p, path, visited,      i, s) {
     path[p+1] = from
-    visited[from] = from ~ /[A-Z]+/ ? 0 : 1
+    visited[from]++
 
     for (i = 1; i <= p; i++) s = s "   "
     print s sprint_arr(path, 1, p+1)
@@ -44,8 +44,8 @@ function print_tree(from, to, p, path, visited,      i, s) {
         return
     } else {
         for (i = 1; i <= TREE[from][0]; i++)
-            if (!visited[TREE[from][i]]) {
-                print_tree(TREE[from][i], to, p + 1, path, visited)
+            if (can_visit(TREE[from][i], visited)) {
+                paths(TREE[from][i], to, p + 1, path, visited)
             }
     }
     delete visited[from]
@@ -54,4 +54,8 @@ function print_tree(from, to, p, path, visited,      i, s) {
 function sprint_arr(arr, i, j,    s) {
     while (i <= j) s = s (s ? "," : "") arr[i++]
     return s
+}
+
+function can_visit(cave, visited) {
+    return cave ~ /[A-Z]+/ || !visited[cave]
 }
