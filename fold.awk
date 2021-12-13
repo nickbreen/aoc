@@ -9,6 +9,7 @@ BEGINFILE {
     delete DOTS
     Y = 0
     X = 0
+    VISIBLE_DOTS = 0
 }
 
 /[0-9]+,[0-9]+/ {
@@ -22,24 +23,45 @@ BEGINFILE {
     DOTS[y][x]++
 }
 
+/^$/ {
+    print sprint_dots()
+}
+
 $1 ~ /^fold along x/ {
     foldx($2)
+    print sprint_dots()
 }
 
 $1 ~ /^fold along y/ {
     foldy($2)
-}
-
-ENDFILE {
     print sprint_dots()
 }
 
-function foldx(x) {
-
+$1 ~ /^fold along / {
+    nextfile
 }
 
-function foldy(y) {
+ENDFILE {
+    for (y = 0; y <= Y; y++)
+        for (x = 0; x <= X; x++)
+            if (DOTS[y][x]) VISIBLE_DOTS++
+    print FILENAME, VISIBLE_DOTS
+}
 
+function foldx(f,    y, x) {
+    for (y = 0; y <= Y; y++) {
+        for (x = f + 1; x <= X; x++)
+            DOTS[y][f-(x-f)] += DOTS[y][x]
+    }
+    X = f-1
+}
+
+function foldy(f,    y, x) {
+    for (y = f+1; y <= Y; y++) {
+        for (x = 0; x <= X; x++)
+            DOTS[f-(y-f)][x] += DOTS[y][x]
+    }
+    Y = f-1
 }
 
 function sprint_dots(      y, x, s) {
