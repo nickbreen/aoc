@@ -37,9 +37,10 @@ $1 ~ /^fold along y/ {
     print sprint_dots()
 }
 
-$1 ~ /^fold along / {
-    nextfile
-}
+# part 1, stop at first fold
+#$1 ~ /^fold along / {
+#    nextfile
+#}
 
 ENDFILE {
     for (y = 0; y <= Y; y++)
