@@ -1,4 +1,4 @@
-#!/usr/bin/awk --file
+#!/usr/bin/gawk --file
 
 
 BEGIN {
