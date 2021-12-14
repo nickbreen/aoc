@@ -1,5 +1,9 @@
 #!/usr/bin/gawk --file
 
+BEGIN {
+    ROUNDS = rounds ? rounds : 10
+}
+
 BEGINFILE {
     delete INSERTION
     delete TEMPLATE
@@ -17,7 +21,7 @@ BEGINFILE {
 
 ENDFILE {
     print "Template: " TEMPLATE[0]
-    for (i = 1; i <= 10; i++) {
+    for (i = 1; i <= ROUNDS; i++) {
         template = TEMPLATE[i-1]
         n = length(template)
         for (j = 1; j < n; j++) {
@@ -28,7 +32,8 @@ ENDFILE {
             TEMPLATE[i] = TEMPLATE[i] left insertion
         }
         TEMPLATE[i] = TEMPLATE[i] right
-        print "After step " i ": (" length(TEMPLATE[i]) ") " TEMPLATE[i]
+        n = length(TEMPLATE[i])
+        print "After step " i ": (" n ") " substr(TEMPLATE[i], 1, 100)
     }
 
     if (ARGIND == 1) {
@@ -38,14 +43,14 @@ ENDFILE {
         expected[3] = "NBBBCNCCNBBNBNBBCHBHHBCHB"
         expected[4] = "NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB"
 
-        for (i = 1; i <= 4; i++)
+        for (i = 1; i <= (4 < ROUNDS ? 4 : ROUNDS); i++)
             if (TEMPLATE[i] != expected[i]) {
                 print "error at " i " expected " expected[i] " got " TEMPLATE[i]
                 exit 1
             }
     }
 
-    template = TEMPLATE[10]
+    template = TEMPLATE[ROUNDS]
     delete elements
     for (i = 1; i <= length(template); i++) {
         element = substr(template, i, 1)
@@ -53,7 +58,7 @@ ENDFILE {
     }
     for (i in elements) print i " = " elements[i]
 
-    if (ARGIND == 1) {
+    if (ARGIND == 1 && 10 <= ROUNDS) {
         if (elements["H"] != 161) {
             print "expected H = 161"
             exit 1
@@ -66,5 +71,5 @@ ENDFILE {
 
     asort(elements)
 
-    print elements[length(elements)] " - " elements[1] " = " (elements[length(elements)] - elements[1])
+    print FILENAME, elements[length(elements)] " - " elements[1] " = " (elements[length(elements)] - elements[1])
 }
