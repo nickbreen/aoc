@@ -36,8 +36,10 @@ $1 ~ /^fold along / {
 }
 
 ENDFILE {
-    VISIBLE = 0
-    for (y = 0; y <= Y; y++) for (x = 0; x <= X; x++) if (DOTS[y][x]) VISIBLE++
+    if (part == 1) {
+        VISIBLE = 0
+        for (y = 0; y <= Y; y++) for (x = 0; x <= X; x++) if (DOTS[y][x]) VISIBLE++
+    }
     print FILENAME, VISIBLE
     if (part != 1) print sprint_dots()
 }
