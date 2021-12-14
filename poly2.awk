@@ -13,8 +13,7 @@ BEGINFILE {
 
 FNR == 1 {
     for (i = 1; i < NF; i++) {
-        j = i + 1
-        PAIR[$i $j]++
+        PAIR[$i $(i+1)]++
         ELEMENT[$i]++
     }
     ELEMENT[$i]++
