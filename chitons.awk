@@ -58,7 +58,7 @@ ENDFILE {
 
     #print sprint_grid()
 
-    while (UNVISITED[Y][X]) {
+    while (length(FRONTIER)) {
         find_smallest_frontier()
     }
 
@@ -95,6 +95,7 @@ function consider_neighbours(y, x,     d) {
 
     UNVISITED[y][x] = 0
     delete FRONTIER[y][x]
+    if (length(FRONTIER[y]) == 0) delete FRONTIER[y]
 
     #if (y % 5 == 0 || x % 5 == 0) print sprint_grid(), y "/" Y "," x "/" X
 }
