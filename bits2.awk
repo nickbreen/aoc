@@ -35,91 +35,99 @@ BEGIN {
     DIGITS["1110"] = "E"
     DIGITS["1111"] = "F"
 
-    OPS["000"] = "+"
-    OPS["001"] = "*"
-    OPS["010"] = "min"
-    OPS["011"] = "max"
-    OPS["100"] = "lit"
-    OPS["101"] = ">"
-    OPS["110"] = "<"
-    OPS["111"] = "="
+    OPS["000"] = "ADD"
+    OPS["001"] = "MUL"
+    OPS["010"] = "MIN"
+    OPS["011"] = "MAX"
+    OPS["100"] = "LIT"
+    OPS["101"] = "GT "
+    OPS["110"] = "LT "
+    OPS["111"] = "EQ "
 
     PROCINFO["sorted_in"] = "@ind_str_asc"
+}
+
+function sprint_operands(  o, s) {
+    for (o in OPERANDS) s = s " " OPERANDS[o]
+    return s
 }
 
 $1 ~ /^[0-9A-F]+$/ {
     delete STACK
     STACK_PTR = 0
     decode_packet(to_binary_string($1), 1)
-
+    delete OPERANDS
+    OPERANDS_PTR = 0
     do {
         print sprint_stack()
         switch (STACK[STACK_PTR]) {
             case "000":
-                print "SUM", STACK[STACK_PTR+1], STACK[STACK_PTR+2]
-                STACK[STACK_PTR] = STACK[STACK_PTR+1] + STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+1]
+                print "SUM", sprint_operands()
+                STACK[STACK_PTR++] = "100"
+                STACK[STACK_PTR] = 0
+                do {
+                    STACK[STACK_PTR] += OPERANDS[OPERANDS_PTR]
+                } while (--OPERANDS_PTR)
                 break
             case "001":
-                print "MUL", STACK[STACK_PTR+1], STACK[STACK_PTR+2]
-                STACK[STACK_PTR] = STACK[STACK_PTR+1] * STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+1]
+                print "MUL", sprint_operands()
+                STACK[STACK_PTR++] = "100"
+                STACK[STACK_PTR] = 1
+                do {
+                    STACK[STACK_PTR] *= OPERANDS[OPERANDS_PTR]
+                } while (--OPERANDS_PTR)
                 break
             case "010":
-                print "MIN", STACK[STACK_PTR+1], STACK[STACK_PTR+2], STACK[STACK_PTR+3]
+                print "MIN", sprint_operands()
+                STACK[STACK_PTR++] = "100"
                 STACK[STACK_PTR] = -log(0)
-                for (i = STACK_PTR + 3; STACK_PTR < i; i--) {
-                    print "min(" i ")", STACK[STACK_PTR], STACK[i]
-                    STACK[STACK_PTR] = STACK[STACK_PTR] < STACK[i] ? STACK[STACK_PTR] : STACK[i]
-                    delete STACK[i]
-                }
+                do {
+                    STACK[STACK_PTR] = STACK[STACK_PTR] < OPERANDS[OPERANDS_PTR] ? STACK[STACK_PTR] : OPERANDS[OPERANDS_PTR]
+                } while (--OPERANDS_PTR)
                 break
             case "011":
-                print "MAX", STACK[STACK_PTR+1], STACK[STACK_PTR+2], STACK[STACK_PTR+3]
+                print "MAX", sprint_operands()
+                STACK[STACK_PTR++] = "100"
                 STACK[STACK_PTR] = log(0)
-                for (i = STACK_PTR + 3; STACK_PTR < i; i--) {
-                    print "max(" i ")", STACK[STACK_PTR], STACK[i]
-                    STACK[STACK_PTR] = STACK[i] < STACK[STACK_PTR] ? STACK[STACK_PTR] : STACK[i]
-                    delete STACK[i]
-                }
+                do {
+                    STACK[STACK_PTR] = OPERANDS[OPERANDS_PTR] < STACK[STACK_PTR] ? STACK[STACK_PTR] : OPERANDS[OPERANDS_PTR]
+                } while (--OPERANDS_PTR)
                 break
             case "100":
                 print "LIT", STACK[STACK_PTR+1]
-                STACK[STACK_PTR] = STACK[STACK_PTR+1]
+                OPERANDS[++OPERANDS_PTR] = STACK[STACK_PTR+1]
                 delete STACK[STACK_PTR+1]
+                delete STACK[STACK_PTR]
                 break
             case "101":
-                print "GT", STACK[STACK_PTR+1], STACK[STACK_PTR+2]
-                STACK[STACK_PTR] = STACK[STACK_PTR+1] > STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+1]
+                print "GT", sprint_operands()
+                STACK[STACK_PTR++] = "100"
+                STACK[STACK_PTR] = OPERANDS[2] > OPERANDS[1]
+                OPERANDS_PTR = 0
                 break
             case "110":
-                print "LT", STACK[STACK_PTR+1], STACK[STACK_PTR+2]
-                STACK[STACK_PTR] = STACK[STACK_PTR+1] < STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+1]
+                print "LT", sprint_operands()
+                STACK[STACK_PTR++] = "100"
+                STACK[STACK_PTR] = OPERANDS[2] < OPERANDS[1]
+                OPERANDS_PTR = 0
                 break
             case "111":
-                print "EQ", STACK[STACK_PTR+1], STACK[STACK_PTR+2]
-                STACK[STACK_PTR] = STACK[STACK_PTR+1] == STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+2]
-                delete STACK[STACK_PTR+1]
+                print "EQ", sprint_operands()
+                STACK[STACK_PTR++] = "100"
+                STACK[STACK_PTR] = OPERANDS[2] == OPERANDS[1]
+                OPERANDS_PTR = 0
                 break
             default:
         }
         asort(STACK, STACK, "isort")
-        STACK_PTR--
-    } while (0 < STACK_PTR)
+    } while (--STACK_PTR)
 
-    if ($2 && STACK[1] != $2) {
-        print "FAIL " STACK[1] " (" typeof(STACK[1]) ") was not " $2 " (" typeof($2) ") " $1
+    if ($2 && OPERANDS[1] != $2) {
+        print "FAIL " OPERANDS[1] " (" typeof(OPERANDS[1]) ") was not " $2 " (" typeof($2) ") " $1
         print
         exit 1
     } else {
-        printf "PASS %d %x\n", STACK[1], STACK[1]
+        printf "PASS %d %x\n", OPERANDS[1], OPERANDS[1]
     }
 }
 
