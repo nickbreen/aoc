@@ -33,22 +33,23 @@ BEGINFILE {
 
 ENDFILE {
     MIN_DX = 1  # must fire forwards
-    MIN_DY = 1  # need to fire up to get highest arc
-    MAX_DX = 2 * (TARGET_X2 - TARGET_X1)  # estimated maximum rate before passing over target area
+    MIN_DY = TARGET_Y2  # need to fire up to get highest arc
+    MAX_DX = 4 * (TARGET_X2 - TARGET_X1)  # estimated maximum rate before passing over target area
     MAX_DY = 8 * (TARGET_Y2 - TARGET_Y1) # estimated maximum rate before passing over target area
 
     MAX_Y = MAX_DY * MAX_DY / 2
 
     MAX_STEPS = abs(TARGET_Y2) < abs(TARGET_X2) ? abs(TARGET_X2) : abs(TARGET_Y2)
 
-    MAX_STEPS *= 4
+    MAX_STEPS *= 8
 
     print "Finding firing solution for dy=" MIN_DY ".." MAX_DY, "; dx=" MIN_DX ".." MAX_DX, "over", MAX_STEPS, "steps"
+
+    N = 0
 
     MAX_POS_Y = SUB_Y
     for (dy = MIN_DY; dy <= MAX_DY; dy++) {
         for (dx = MIN_DX; dx <= MAX_DX; dx++) {
-            #if (!(dx == 7 && dy == 2 || dx == 6 && dy == 3 || dx == 9 && dy == 0 || dx == 6 && dy == 9)) continue
             delete POS_Y
             delete POS_Y
             POS_Y[0] = SUB_Y
@@ -69,9 +70,11 @@ ENDFILE {
             if (in_target(POS_Y[i], POS_X[i])) {
                 MAX_POS_Y = max_pos_y < MAX_POS_Y ? MAX_POS_Y : max_pos_y
                 print "Firing solution found", dy "," dx, "max Y " MAX_POS_Y
+                N++
             }
         }
     }
+    print N
 }
 
 function sprint_area(py, px,   y, x, s, pp, i) {
