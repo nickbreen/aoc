@@ -4,8 +4,8 @@
     msg=$1
     n=length(msg)
 
-    for (i=4; i <= n; i++) {
-        s = substr(msg, i-3, 4)
+    for (i=14; i <= n; i++) {
+        s = substr(msg, i-13, 14)
         split(s, w, "")
         delete a
         for (j in w) {
@@ -15,15 +15,15 @@
         for (j in a) {
             x++
         }
-        if (x != 4) {
-            print "not a start-of-packet", i, s, x
+        if (x != 14) {
+            print "not a start-of-message", i, s, x
             continue
         }
-        print "start-of-packet", i, s, x
-        if ($2 && i == $2) {
+        print "start-of-message", i, s, x
+        if ($3 && i == $3) {
             print i, "correct"
-        } else if ($2 && i != $2) {
-            print i, "expected", $2
+        } else if ($3 && i != $3) {
+            print i, "expected", $3
         }
         print i
         next
