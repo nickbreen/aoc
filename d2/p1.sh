@@ -35,4 +35,6 @@ do
   unset deltas
 done
 
-echo $safe_levels_count/$total_levels_count
+echo $safe_levels_count
+
+exit $safe_levels_count
